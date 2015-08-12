@@ -1,0 +1,105 @@
+<head>
+  <title>NoterEth - Prototype 'Proof of Existence'</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+  <div class="container">
+    <h1>NoterEth</h1>
+    <p>NoterEth is a prototype notary and "Proof of Existence" DAPP. By submitting hashes of documents you can proof on a later date that you were privileged to certain information at a point in history.
+    The transfer of documents can enable other contracts to allow certain access based on who owns a hash.</p>
+    <p>Submitting a document should cost you approximate 163986 Gas but results might vary. If you want to play around with it you can deploy it yourself on a test-net.</p>
+    <p><a href="https://github.com/maran/notareth">The code lives here
+      if you want to play with it.</a></p>
+    {{> notice }}
+    <div class="row">
+      <div class="col-md-6">
+        {{> newDocument }}
+      </div>
+      <div class="col-md-6">
+        {{> transferDocument }}
+      </div>
+    </div>
+    {{> documentTable }}
+    {{> debug}}
+  </div>
+</body>
+
+<template name="debug">
+  <p>
+    Balance: {{ balance }} Ether
+  </p>
+</template>
+
+<template name="notice">
+  {{#if notConnected}}
+    <div class="alert alert-danger">
+      You are not connected to Geth.
+      Make sure you start geth with at least --rpc --rpcaddr="localhost" --rpcport="8080" --rpccorsdomain="{{ hostName }}"
+    </div>
+  {{/if}}
+
+  {{#if notice }}
+    <div class="alert alert-success" role="alert">
+      {{ notice }}
+    </div>
+  {{/if}}
+</template>
+<template name="transferDocument">
+  <h2>Transfer ownership</h2>
+  <form id="transfer">
+    <div class="form-group {{hasErrors}}">
+     <label>Document</label>
+     <input type="text" id="docHash" name="documentHash" class="form-control">
+   </div>
+   <div class="form-group">
+     <label>Transfer to account</label>
+     <input type="text" name="account" class="form-control" id="account">
+   </div>
+   <button class="btn btn-primary" {{isDisabled}}>Transfer document</button>
+  </form>
+</template>
+
+<template name="newDocument">
+  <h2>New document</h2>
+  <form class="form-inline" id="calcHash">
+    <div class="form-group">
+      <label>Document to hash</label>
+      <input class="form-control" type="file" name="fileUpload" id="fileUpload" />
+    </div>
+    <button class="btn btn-primary">Calculate Hash</button>
+  </form>
+
+  <form id="submitDoc" name="submitDoc" class="form-vertical">
+   <div class="form-group">
+     <label>Document Hash</label>
+     <input type="text" name="documentHash" readonly=true placeholder="Calculated hash" value="{{documentHash}}" class="form-control">
+   </div>
+   <button class="btn btn-primary" {{isDisabled}}>Submit document</button>
+  </form>
+</template>
+
+<template name="documentTable">
+    <h2>{{ counter }} transactions</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Hash</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Block</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transactions}}
+        <tr>
+          <td>{{hash}}</td>
+          <td>{{from}}</td>
+          <td>{{to}}</td>
+          <td>{{blockNumber}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+</template>
