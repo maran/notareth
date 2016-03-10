@@ -20,7 +20,7 @@ contract Etherdoc {
             usedHashes[hash] = true;
             success = true;
         }
-        return true;
+        return success;
     }
     function createHistory (bytes32 hash, address from, address to) internal{
             ++latestDocument;
